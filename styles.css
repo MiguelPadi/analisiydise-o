@@ -1,0 +1,49 @@
+body {
+padding: 0;
+}
+
+
+header {
+background: #0077b6;
+color: white;
+text-align: center;
+padding: 1rem;
+}
+
+
+main {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 1rem;
+padding: 1rem;
+}
+
+
+section {
+background: white;
+padding: 1rem;
+border-radius: 10px;
+box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+
+form input, form select, form button {
+display: block;
+margin: 0.3rem 0;
+padding: 0.5rem;
+width: 100%;
+}
+
+
+button {
+background: #0077b6;
+color: white;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
+
+
+button:hover {
+background: #023e8a;
+}
