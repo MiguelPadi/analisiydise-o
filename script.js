@@ -160,7 +160,10 @@ function actualizarListaReservas() {
   lista.innerHTML = "";
   reservas.forEach((r, i) => {
     const li = document.createElement("li");
-    li.textContent = `${i + 1}. ${r.cliente} → ${r.paquete} | Pagado: $${r.pagado.toFixed(2)} | Restante: $${r.restante.toFixed(2)} ${r.seguro ? "🛡️ Seguro" : ""}`;
+    li.innerHTML = `
+    ${i + 1}. ${r.cliente} → ${r.paquete} | Pagado: $${r.pagado.toFixed(2)} | Restante: $${r.restante.toFixed(2)} ${r.seguro ? "🛡️ Seguro" : ""}
+    ${r.restante > 0 ? `<button onclick="completarPago(${i})">Pago Completado</button>` : `<span style="color:green;font-weight:bold;">✓ Pago Completo</span>`}
+    <button onclick="cancelarReserva(${i})">Cancelar Reserva</button>`;
     lista.appendChild(li);
   });
 }
@@ -227,4 +230,34 @@ function cancelarPago() {
 
 function cerrarModalQR() {
   document.getElementById("modalQR").style.display = "none";
+}
+
+// Completa el pago restante
+function completarPago(index) {
+  const reserva = reservas[index];
+  reserva.pagado += reserva.restante;
+  reserva.restante = 0;
+  alert(`Pago completado para ${reserva.cliente}`);
+  actualizarListaReservas();
+}
+
+// Cancela una reserva
+function cancelarReserva(index) {
+  const reserva = reservas[index];
+  // Reducir ocupación del paquete
+  const paquete = paquetes.find(p => p.destino === reserva.paquete && p.fecha === reserva.fecha);
+  if (paquete) paquete.ocupados--;
+  
+  // Marcar cancelación en cliente
+  const cliente = clientes.find(c => c.nombre === reserva.cliente);
+  if (cliente) {
+    cliente.cancelaciones++;
+    if (cliente.cancelaciones >= 2) cliente.riesgoso = true;
+  }
+
+  // Eliminar reserva
+  reservas.splice(index, 1);
+  alert(`Reserva cancelada para ${reserva.cliente}`);
+  actualizarListaPaquetes();
+  actualizarListaReservas();
 }
