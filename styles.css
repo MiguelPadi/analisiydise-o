@@ -1,4 +1,4 @@
-/* ========= GENERAL ========= */
+
 * {
   margin: 0;
   padding: 0;
@@ -13,7 +13,7 @@ body {
   min-height: 100vh;
 }
 
-/* ========= ENCABEZADO ========= */
+
 h1 {
   text-align: center;
   font-size: 2.5rem;
@@ -22,7 +22,7 @@ h1 {
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
 }
 
-/* ========= SECCIONES ========= */
+
 .seccion {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
@@ -44,7 +44,7 @@ h1 {
   padding-left: 10px;
 }
 
-/* ========= FORMULARIOS ========= */
+
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -99,7 +99,7 @@ ul li {
   color: #fff;
 }
 
-/* ========= MODALES ========= */
+
 #modalConfirmacion,
 #modalQR {
   position: fixed;
@@ -123,14 +123,14 @@ ul li {
   margin: 15px 0;
 }
 
-/* ========= ESTADOS ========= */
+
 #estadoSesion {
   margin-top: 10px;
   font-weight: bold;
   color: #ffea00;
 }
 
-/* ========= ADAPTABILIDAD ========= */
+
 @media (max-width: 768px) {
   h1 {
     font-size: 1.8rem;

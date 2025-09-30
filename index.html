@@ -14,7 +14,7 @@
 
   <h1>Sistema de Reservas - ExploraBolivia</h1>
 
-  <!-- LOGIN SOLO ADMIN -->
+  
   <div class="seccion" id="loginSection">
     <h2>Inicio de Sesión (Administrador)</h2>
     <input type="text" id="adminUser" placeholder="Usuario" />
@@ -25,12 +25,12 @@
 
   <div id="adminPanel" style="display:none;">
 
-    <!-- Botón para cerrar sesión -->
+    
     <div class="seccion">
       <button onclick="logoutAdmin()">Cerrar Sesión</button>
     </div>
 
-    <!-- Registro de Clientes -->
+   
     <div class="seccion">
       <h2>Registro de Clientes</h2>
       <input type="text" id="nombreCliente" placeholder="Nombre">
@@ -40,7 +40,7 @@
       <ul id="listaClientes"></ul>
     </div>
 
-    <!-- Registro de Paquetes -->
+    
     <div class="seccion">
       <h2>Registro de Paquetes</h2>
       <input type="text" id="destinoPaquete" placeholder="Destino">
@@ -52,7 +52,7 @@
       <ul id="listaPaquetes"></ul>
     </div>
 
-    <!-- Reservas -->
+   
     <div class="seccion">
       <h2>Reservas</h2>
       <select id="selectCliente">
@@ -69,7 +69,7 @@
       <ul id="listaReservas"></ul>
     </div>
 
-    <!-- Recordatorios -->
+    
     <div class="seccion">
       <h2>Recordatorios de Pago</h2>
       <button onclick="mostrarRecordatorios()">Mostrar Recordatorios</button>
@@ -78,14 +78,14 @@
 
   </div>
 
-  <!-- Modal de Confirmación de Pago Parcial -->
+  
 <div id="modalConfirmacion" style="display:none; position:fixed; top:20%; left:35%; background:white; padding:20px; border:2px solid #333;">
   <p>¿Desea continuar con el pago del 50% inicial?</p>
   <button onclick="confirmarPagoInicial()">Sí</button>
   <button onclick="cancelarPago()">No</button>
 </div>
 
-<!-- Modal de Código QR para el 50% restante -->
+
 <div id="modalQR" style="display:none; position:fixed; top:15%; left:30%; background:white; padding:20px; border:2px solid #333;">
   <h3>Escanea este QR para completar el pago</h3>
   <img id="qrImagen" src="https://api.qrserver.com/v1/create-qr-code/?data=Pago%20ExploraBolivia&size=200x200" alt="QR de Pago">

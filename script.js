@@ -9,7 +9,7 @@ const ADMIN = {
 
 let sesionActiva = false;
 
-// LOGIN
+
 function loginAdmin() {
   const user = document.getElementById("adminUser").value;
   const pass = document.getElementById("adminPass").value;
@@ -31,7 +31,7 @@ function logoutAdmin() {
   document.getElementById("loginSection").style.display = "block";
 }
 
-// CLIENTES
+
 function registrarCliente() {
   const nombre = document.getElementById("nombreCliente").value.trim();
   const email = document.getElementById("emailCliente").value.trim();
@@ -69,7 +69,7 @@ function actualizarSelectClientes() {
   });
 }
 
-// PAQUETES
+
 function registrarPaquete() {
   const destino = document.getElementById("destinoPaquete").value.trim();
   const fecha = document.getElementById("fechaPaquete").value;
@@ -111,7 +111,7 @@ function actualizarSelectPaquetes() {
   });
 }
 
-// RESERVAR
+
 function reservar() {
   const clienteIndex = document.getElementById("selectCliente").value;
   const paqueteIndex = document.getElementById("selectPaquete").value;
@@ -145,11 +145,11 @@ function reservar() {
   fechaReserva: new Date()
 };
 
-// Si no es riesgoso, mostrar modal de confirmación para pagar 50%
+
 if (!cliente.riesgoso) {
   document.getElementById("modalConfirmacion").style.display = "block";
 } else {
-  confirmarPagoInicial(true); // pago completo directo
+  confirmarPagoInicial(true); 
 }
   actualizarListaPaquetes();
   actualizarListaReservas();
@@ -214,7 +214,7 @@ function confirmarPagoInicial(pagoCompleto = false) {
   actualizarListaPaquetes();
   actualizarListaReservas();
 
-  // Si hay pago restante, mostrar QR
+  
   if (!pagoCompleto) {
     document.getElementById("modalQR").style.display = "block";
   }
@@ -232,7 +232,7 @@ function cerrarModalQR() {
   document.getElementById("modalQR").style.display = "none";
 }
 
-// Completa el pago restante
+
 function completarPago(index) {
   const reserva = reservas[index];
   reserva.pagado += reserva.restante;
@@ -241,21 +241,21 @@ function completarPago(index) {
   actualizarListaReservas();
 }
 
-// Cancela una reserva
+
 function cancelarReserva(index) {
   const reserva = reservas[index];
-  // Reducir ocupación del paquete
+ 
   const paquete = paquetes.find(p => p.destino === reserva.paquete && p.fecha === reserva.fecha);
   if (paquete) paquete.ocupados--;
   
-  // Marcar cancelación en cliente
+  
   const cliente = clientes.find(c => c.nombre === reserva.cliente);
   if (cliente) {
     cliente.cancelaciones++;
     if (cliente.cancelaciones >= 2) cliente.riesgoso = true;
   }
 
-  // Eliminar reserva
+  
   reservas.splice(index, 1);
   alert(`Reserva cancelada para ${reserva.cliente}`);
   actualizarListaPaquetes();
