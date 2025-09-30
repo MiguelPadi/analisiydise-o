@@ -1,9 +1,37 @@
-// Datos en memoria
 let clientes = [];
 let paquetes = [];
 let reservas = [];
 
-// Función para registrar cliente
+const ADMIN = {
+  user: "admin",
+  pass: "1234"
+};
+
+let sesionActiva = false;
+
+// LOGIN
+function loginAdmin() {
+  const user = document.getElementById("adminUser").value;
+  const pass = document.getElementById("adminPass").value;
+
+  if (user === ADMIN.user && pass === ADMIN.pass) {
+    sesionActiva = true;
+    document.getElementById("estadoSesion").textContent = "Sesión iniciada";
+    document.getElementById("loginSection").style.display = "none";
+    document.getElementById("adminPanel").style.display = "block";
+  } else {
+    alert("Usuario o contraseña incorrectos.");
+  }
+}
+
+function logoutAdmin() {
+  sesionActiva = false;
+  document.getElementById("estadoSesion").textContent = "";
+  document.getElementById("adminPanel").style.display = "none";
+  document.getElementById("loginSection").style.display = "block";
+}
+
+// CLIENTES
 function registrarCliente() {
   const nombre = document.getElementById("nombreCliente").value.trim();
   const email = document.getElementById("emailCliente").value.trim();
@@ -20,7 +48,6 @@ function registrarCliente() {
   actualizarSelectClientes();
 }
 
-// Función para mostrar clientes
 function actualizarListaClientes() {
   const lista = document.getElementById("listaClientes");
   lista.innerHTML = "";
@@ -42,7 +69,7 @@ function actualizarSelectClientes() {
   });
 }
 
-// Función para registrar paquete
+// PAQUETES
 function registrarPaquete() {
   const destino = document.getElementById("destinoPaquete").value.trim();
   const fecha = document.getElementById("fechaPaquete").value;
@@ -63,7 +90,6 @@ function registrarPaquete() {
   actualizarSelectPaquetes();
 }
 
-// Función para mostrar paquetes
 function actualizarListaPaquetes() {
   const lista = document.getElementById("listaPaquetes");
   lista.innerHTML = "";
@@ -85,7 +111,7 @@ function actualizarSelectPaquetes() {
   });
 }
 
-// Función para reservar
+// RESERVAR
 function reservar() {
   const clienteIndex = document.getElementById("selectCliente").value;
   const paqueteIndex = document.getElementById("selectPaquete").value;
@@ -104,23 +130,27 @@ function reservar() {
     return;
   }
 
-  // Aumenta precio si está al 80% de ocupación
   if ((paquete.ocupados / paquete.cupos) >= 0.8) {
     paquete.precio *= 1.10;
     alert("Precio aumentado en 10% por alta demanda.");
   }
 
   const pagoInicial = cliente.riesgoso ? paquete.precio : paquete.precio * 0.5;
-  reservas.push({
-    cliente: cliente.nombre,
-    paquete: paquete.destino,
-    fecha: paquete.fecha,
-    pagado: pagoInicial,
-    restante: cliente.riesgoso ? 0 : paquete.precio * 0.5,
-    seguro: seguroExtra
-  });
+  reservaPendiente = {
+  clienteIndex,
+  paqueteIndex,
+  cliente,
+  paquete,
+  seguro: seguroExtra,
+  fechaReserva: new Date()
+};
 
-  paquete.ocupados++;
+// Si no es riesgoso, mostrar modal de confirmación para pagar 50%
+if (!cliente.riesgoso) {
+  document.getElementById("modalConfirmacion").style.display = "block";
+} else {
+  confirmarPagoInicial(true); // pago completo directo
+}
   actualizarListaPaquetes();
   actualizarListaReservas();
 }
@@ -135,15 +165,66 @@ function actualizarListaReservas() {
   });
 }
 
-// Función para mostrar recordatorios
 function mostrarRecordatorios() {
   const lista = document.getElementById("listaRecordatorios");
   lista.innerHTML = "";
+  const hoy = new Date();
+
   reservas.forEach(r => {
     if (r.restante > 0) {
+      const fechaReserva = new Date(r.fechaReserva);
+      const tiempoPasado = Math.floor((hoy - fechaReserva) / (1000 * 60 * 60 * 24)); // días
+
       const li = document.createElement("li");
-      li.textContent = `Recordatorio: ${r.cliente} debe pagar $${r.restante.toFixed(2)} antes del viaje.`;
+      li.textContent = `🔔 ${r.cliente} debe pagar $${r.restante.toFixed(2)}. Tiempo restante: ${7 - tiempoPasado} días`;
+
+      if (tiempoPasado > 7) {
+        li.style.color = "red";
+        li.textContent += " ⚠️ PLAZO VENCIDO";
+      }
+
       lista.appendChild(li);
     }
   });
+}
+
+let reservaPendiente = null;
+
+function confirmarPagoInicial(pagoCompleto = false) {
+  const { cliente, paquete, seguro, clienteIndex, paqueteIndex, fechaReserva } = reservaPendiente;
+
+  const precio = paquete.precio;
+  const pagado = pagoCompleto ? precio : precio * 0.5;
+  const restante = pagoCompleto ? 0 : precio * 0.5;
+
+  reservas.push({
+    cliente: cliente.nombre,
+    paquete: paquete.destino,
+    fecha: paquete.fecha,
+    pagado,
+    restante,
+    seguro,
+    fechaReserva
+  });
+
+  paquetes[paqueteIndex].ocupados++;
+  actualizarListaPaquetes();
+  actualizarListaReservas();
+
+  // Si hay pago restante, mostrar QR
+  if (!pagoCompleto) {
+    document.getElementById("modalQR").style.display = "block";
+  }
+
+  document.getElementById("modalConfirmacion").style.display = "none";
+  reservaPendiente = null;
+}
+
+function cancelarPago() {
+  document.getElementById("modalConfirmacion").style.display = "none";
+  reservaPendiente = null;
+}
+
+function cerrarModalQR() {
+  document.getElementById("modalQR").style.display = "none";
 }

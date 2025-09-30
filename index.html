@@ -1,104 +1,98 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="styles.css">
   <title>ExploraBolivia - Sistema de Reservas</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
-    h2 {
-      color: #2b6cb0;
-    }
-    .seccion {
-      background: white;
-      padding: 15px;
-      margin: 15px 0;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    input, select, button {
-      display: block;
-      margin: 8px 0;
-      padding: 8px;
-      width: 100%;
-      max-width: 300px;
-    }
-    button {
-      background: #2b6cb0;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-    button:hover {
-      background: #1a4f80;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      background: #e2e8f0;
-      margin: 5px 0;
-      padding: 5px;
-      border-radius: 5px;
-    }
+    body { font-family: sans-serif; }
+    .seccion { margin: 20px 0; padding: 10px; border: 1px solid #ccc; }
   </style>
 </head>
 <body>
 
-  <h1>🌎 Sistema de Reservas - ExploraBolivia</h1>
+  <h1>Sistema de Reservas - ExploraBolivia</h1>
 
-  <!-- Registro de Clientes -->
-  <div class="seccion">
-    <h2>Registro de Clientes</h2>
-    <input type="text" id="nombreCliente" placeholder="Nombre">
-    <input type="email" id="emailCliente" placeholder="Email">
-    <button onclick="registrarCliente()">Registrar Cliente</button>
-    <h3>Lista de Clientes</h3>
-    <ul id="listaClientes"></ul>
+  <!-- LOGIN SOLO ADMIN -->
+  <div class="seccion" id="loginSection">
+    <h2>Inicio de Sesión (Administrador)</h2>
+    <input type="text" id="adminUser" placeholder="Usuario" />
+    <input type="password" id="adminPass" placeholder="Contraseña" />
+    <button onclick="loginAdmin()">Iniciar Sesión</button>
+    <p id="estadoSesion"></p>
   </div>
 
-  <!-- Registro de Paquetes -->
-  <div class="seccion">
-    <h2>Registro de Paquetes</h2>
-    <input type="text" id="destinoPaquete" placeholder="Destino">
-    <input type="date" id="fechaPaquete">
-    <input type="number" id="precioPaquete" placeholder="Precio">
-    <input type="number" id="cupoPaquete" placeholder="Cupos">
-    <button onclick="registrarPaquete()">Registrar Paquete</button>
-    <h3>Lista de Paquetes</h3>
-    <ul id="listaPaquetes"></ul>
+  <div id="adminPanel" style="display:none;">
+
+    <!-- Botón para cerrar sesión -->
+    <div class="seccion">
+      <button onclick="logoutAdmin()">Cerrar Sesión</button>
+    </div>
+
+    <!-- Registro de Clientes -->
+    <div class="seccion">
+      <h2>Registro de Clientes</h2>
+      <input type="text" id="nombreCliente" placeholder="Nombre">
+      <input type="email" id="emailCliente" placeholder="Email">
+      <button onclick="registrarCliente()">Registrar Cliente</button>
+      <h3>Lista de Clientes</h3>
+      <ul id="listaClientes"></ul>
+    </div>
+
+    <!-- Registro de Paquetes -->
+    <div class="seccion">
+      <h2>Registro de Paquetes</h2>
+      <input type="text" id="destinoPaquete" placeholder="Destino">
+      <input type="date" id="fechaPaquete">
+      <input type="number" id="precioPaquete" placeholder="Precio">
+      <input type="number" id="cupoPaquete" placeholder="Cupos">
+      <button onclick="registrarPaquete()">Registrar Paquete</button>
+      <h3>Lista de Paquetes</h3>
+      <ul id="listaPaquetes"></ul>
+    </div>
+
+    <!-- Reservas -->
+    <div class="seccion">
+      <h2>Reservas</h2>
+      <select id="selectCliente">
+        <option value="">Selecciona Cliente</option>
+      </select>
+      <select id="selectPaquete">
+        <option value="">Selecciona Paquete</option>
+      </select>
+      <label>
+        <input type="checkbox" id="seguroExtra"> Servicio Adicional (Seguro)
+      </label>
+      <button onclick="reservar()">Reservar</button>
+      <h3>Lista de Reservas</h3>
+      <ul id="listaReservas"></ul>
+    </div>
+
+    <!-- Recordatorios -->
+    <div class="seccion">
+      <h2>Recordatorios de Pago</h2>
+      <button onclick="mostrarRecordatorios()">Mostrar Recordatorios</button>
+      <ul id="listaRecordatorios"></ul>
+    </div>
+
   </div>
 
-  <!-- Reservas -->
-  <div class="seccion">
-    <h2>Reservas</h2>
-    <select id="selectCliente">
-      <option value="">Selecciona Cliente</option>
-    </select>
-    <select id="selectPaquete">
-      <option value="">Selecciona Paquete</option>
-    </select>
-    <label>
-      <input type="checkbox" id="seguroExtra"> Servicio Adicional (Seguro)
-    </label>
-    <button onclick="reservar()">Reservar</button>
-    <h3>Lista de Reservas</h3>
-    <ul id="listaReservas"></ul>
-  </div>
+  <!-- Modal de Confirmación de Pago Parcial -->
+<div id="modalConfirmacion" style="display:none; position:fixed; top:20%; left:35%; background:white; padding:20px; border:2px solid #333;">
+  <p>¿Desea continuar con el pago del 50% inicial?</p>
+  <button onclick="confirmarPagoInicial()">Sí</button>
+  <button onclick="cancelarPago()">No</button>
+</div>
 
-  <!-- Recordatorios -->
-  <div class="seccion">
-    <h2>Recordatorios de Pago</h2>
-    <button onclick="mostrarRecordatorios()">Mostrar Recordatorios</button>
-    <ul id="listaRecordatorios"></ul>
-  </div>
+<!-- Modal de Código QR para el 50% restante -->
+<div id="modalQR" style="display:none; position:fixed; top:15%; left:30%; background:white; padding:20px; border:2px solid #333;">
+  <h3>Escanea este QR para completar el pago</h3>
+  <img id="qrImagen" src="https://api.qrserver.com/v1/create-qr-code/?data=Pago%20ExploraBolivia&size=200x200" alt="QR de Pago">
+  <p id="qrTexto">Completa tu pago restante.</p>
+  <button onclick="cerrarModalQR()">Cerrar</button>
+</div>
+
 
   <script src="script.js"></script>
 </body>
